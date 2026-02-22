@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Entrenamientos</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .card-custom {
+            width: 95%;
+            max-width: 1100px;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .table thead {
+            background-color: #198754;
+            color: white;
+        }
+
+        .btn-custom {
+            border-radius: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="card card-custom p-4 bg-white">
+
+    <h2 class="text-center mb-4">
+        ⚽ Lista de Entrenamientos
+    </h2>
+
+    {% if entrenamientos %}
+
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>Jugador</th>
+                    <th>Fecha</th>
+                    <th>Tipo</th>
+                    <th>Duración</th>
+                    <th>Intensidad</th>
+                    <th>Observaciones</th>
+                    <th class="text-center">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entrenamiento in entrenamientos %}
+                <tr>
+                    <td>{{ entrenamiento.jugador_id }}</td>
+                    <td>{{ entrenamiento.fecha_creacion }}</td>
+                    <td>{{ entrenamiento.tipo }}</td>
+                    <td>{{ entrenamiento.duracion }} min</td>
+                    <td>{{ entrenamiento.intensidad }}</td>
+                    <td>{{ entrenamiento.observaciones|default:"Sin observaciones" }}</td>
+                    <td class="text-center">
+
+                        <a href="{% url 'editar_entrenamiento' entrenamiento.jugador_id entrenamiento.id %}"
+                           class="btn btn-warning btn-sm btn-custom">
+                            ✏ Editar
+                        </a>
+
+                        <form method="POST"
+                              action="{% url 'eliminar_entrenamiento' entrenamiento.jugador_id entrenamiento.id %}"
+                              style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit"
+                                    class="btn btn-danger btn-sm btn-custom"
+                                    onclick="return confirm('¿Eliminar entrenamiento?');">
+                                🗑
+                            </button>
+                        </form>
+
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% else %}
+        <div class="text-center p-4">
+            <h5>No hay entrenamientos registrados</h5>
+        </div>
+    {% endif %}
+
+    <div class="text-center mt-4">
+        <a href="{% url 'dashboard' %}" class="btn btn-secondary btn-custom">
+            ← Volver al Dashboard
+        </a>
+    </div>
+
+</div>
+
+</body>
+</html>

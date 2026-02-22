@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Jugadores</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        /* Fondo con gradiente oscuro */
+        body {
+            background: radial-gradient(circle at center, #2c3e50 0%, #000000 100%);
+            min-height: 100vh;
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Navbar transparente/oscura */
+        .custom-nav {
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Tarjeta principal estilo neofit */
+        .card-custom {
+            background-color: white;
+            border-radius: 30px; /* Bordes muy redondeados */
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+            border: none;
+            color: #333;
+        }
+
+        /* Encabezado de la tabla */
+        .table thead {
+            background-color: #f8f9fa;
+        }
+        
+        .table thead th {
+            border: none;
+            color: #666;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            padding: 20px;
+        }
+
+        .table td {
+            vertical-align: middle;
+            padding: 15px 20px;
+            border-color: #f0f0f0;
+        }
+
+        /* Botones personalizados */
+        .btn-add {
+            background-color: #ffffff;
+            color: #000;
+            border-radius: 12px;
+            font-weight: bold;
+            padding: 10px 20px;
+            border: none;
+            transition: 0.3s;
+        }
+
+        .btn-add:hover {
+            background-color: #e2e2e2;
+            transform: translateY(-2px);
+        }
+
+        /* Botones de acción */
+        .btn-action-edit {
+            background-color: #ffc107;
+            border: none;
+            border-radius: 8px;
+            color: black;
+        }
+
+        .btn-action-delete {
+            background-color: #dc3545;
+            border: none;
+            border-radius: 8px;
+            color: white;
+        }
+
+        h2 {
+            font-weight: 800;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-dark custom-nav px-4 py-3">
+        <span class="navbar-brand fw-bold">⚽ Sistema Fútbol</span>
+        <div>
+            <a href="{% url 'dashboard' %}" class="btn btn-outline-light btn-sm me-2">Inicio</a>
+            <a href="{% url 'logout' %}" class="btn btn-outline-danger btn-sm">Cerrar sesión</a>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="text-white">Lista de Jugadores</h2>
+            <a href="{% url 'crear_jugador' %}" class="btn-add shadow-sm">
+                <i class="bi bi-plus-circle-fill me-1"></i> Nuevo Jugador
+            </a>
+        </div>
+
+        {% if jugadores %}
+        <div class="card-custom mb-5">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Posición</th>
+                            <th>Edad</th>
+                            <th class="text-end">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for jugador in jugadores %}
+                        <tr>
+                            <td class="fw-bold">{{ jugador.nombre }}</td>
+                            <td><span class="badge bg-light text-dark">{{ jugador.posicion }}</span></td>
+                            <td>{{ jugador.edad }} años</td>
+                            <td class="text-end">
+                                <div class="d-inline-flex gap-2">
+                                    <a href="{% url 'historial_entrenamientos' jugador.id %}" class="btn btn-action-edit btn-sm p-2" title="Historial">
+                                        <i class="bi bi-clock-history"></i>
+                                    </a>
+                                    
+                                    <form method="POST" action="{% url 'eliminar_jugador' jugador.id %}"
+                                        onsubmit="return confirm('¿Seguro que quieres eliminar este jugador?');" class="m-0">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-action-delete btn-sm p-2" title="Eliminar">
+                                            <i class="bi bi-trash-fill"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% else %}
+        <div class="alert bg-white text-dark text-center shadow" style="border-radius: 20px;">
+            <i class="bi bi-info-circle-fill text-primary"></i> No hay jugadores registrados todavía.
+        </div>
+        {% endif %}
+
+    </div>
+
+</body>
+
+</html>

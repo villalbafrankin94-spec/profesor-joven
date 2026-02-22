@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Tareas</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        /* Fondo gradiente oscuro consistente */
+        body {
+            background: radial-gradient(circle at center, #2c3e50 0%, #000000 100%);
+            min-height: 100vh;
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding-bottom: 50px;
+        }
+
+        /* Tarjeta principal blanca estilo neofit */
+        .card-custom {
+            background-color: white;
+            border-radius: 30px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+            border: none;
+            color: #333;
+        }
+
+        /* Tabla limpia */
+        .table thead th {
+            background-color: #f8f9fa;
+            color: #666;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            border: none;
+            padding: 20px;
+        }
+
+        .table td {
+            vertical-align: middle;
+            padding: 15px 20px;
+            border-color: #f0f0f0;
+        }
+
+        /* Botones de acción estilo referencia */
+        .btn-new {
+            background-color: #ffffff;
+            color: #000;
+            border-radius: 12px;
+            font-weight: bold;
+            padding: 10px 20px;
+            border: none;
+            transition: 0.3s;
+            text-decoration: none;
+        }
+
+        .btn-new:hover {
+            background-color: #e2e2e2;
+            transform: translateY(-2px);
+        }
+
+        .btn-edit-task {
+            background-color: #ffc107;
+            border: none;
+            border-radius: 8px;
+            color: black;
+            font-weight: 600;
+            padding: 5px 12px;
+            font-size: 0.85rem;
+            text-decoration: none;
+        }
+
+        .btn-delete-task {
+            background-color: #dc3545;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            padding: 5px 10px;
+        }
+
+        /* Alertas personalizadas */
+        .alert-custom {
+            border-radius: 15px;
+            border: none;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container mt-5">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="fw-bold mb-0 text-white">📋 Mis Tareas</h2>
+                <p class="text-white-50 small mb-0">Gestión de actividades diarias</p>
+            </div>
+            <div class="d-flex gap-2">
+                <a href="{% url 'dashboard' %}" class="btn btn-outline-light btn-sm border-0">
+                    <i class="bi bi-house-door"></i> Panel
+                </a>
+                <a href="{% url 'form_tarea' %}" class="btn-new shadow-sm">
+                    <i class="bi bi-plus-lg"></i> Nueva Tarea
+                </a>
+            </div>
+        </div>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show alert-custom" role="alert">
+                    <i class="bi bi-info-circle-fill me-2"></i> {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="card-custom">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Tarea</th>
+                            <th>Descripción</th>
+                            <th>Estado</th>
+                            <th class="text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for tarea in tareas %}
+                        <tr>
+                            <td><strong>{{ tarea.titulo }}</strong></td>
+                            <td class="text-muted">{{ tarea.descripcion|truncatechars:50 }}</td>
+                            <td>
+                                {% if tarea.estado == 'completado' %}
+                                    <span class="badge rounded-pill bg-success-subtle text-success border border-success-subtle px-3">Completado</span>
+                                {% elif tarea.estado == 'progreso' %}
+                                    <span class="badge rounded-pill bg-info-subtle text-info border border-info-subtle px-3 text-dark">En Progreso</span>
+                                {% else %}
+                                    <span class="badge rounded-pill bg-light text-dark border px-3">Pendiente</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                <div class="d-inline-flex gap-2">
+                                    <a href="{% url 'editar_tarea' tarea.id %}" class="btn-edit-task">
+                                        <i class="bi bi-pencil-fill"></i> Editar
+                                    </a>
+                                    
+                                    <form action="{% url 'eliminar_tarea' tarea.id %}" method="POST" class="m-0" onsubmit="return confirm('¿Estás seguro de eliminar esta tarea?');">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn-delete-task">
+                                            <i class="bi bi-trash-fill"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center py-5 text-muted">
+                                <i class="bi bi-clipboard-x d-block mb-2" style="font-size: 2rem;"></i>
+                                No tienes tareas registradas. ¡Crea una nueva!
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

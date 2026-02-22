@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión | Sistema Fútbol</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        /* Fondo gradiente oscuro consistente */
+        body {
+            background: radial-gradient(circle at center, #2c3e50 0%, #000000 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Tarjeta de login estilizada */
+        .card-login {
+            background-color: white;
+            border-radius: 30px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
+            width: 100%;
+            max-width: 420px;
+            border: none;
+        }
+
+        .login-icon {
+            font-size: 3.5rem;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #555;
+            margin-left: 5px;
+        }
+
+        .form-control {
+            border-radius: 12px;
+            padding: 12px;
+            border: 1px solid #dee2e6;
+            transition: 0.3s;
+        }
+
+        .form-control:focus {
+            box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.1);
+            border-color: #0d6efd;
+        }
+
+        .btn-login {
+            background-color: #0d6efd;
+            border: none;
+            border-radius: 12px;
+            padding: 12px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn-login:hover {
+            background-color: #0b5ed7;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(13, 110, 253, 0.3);
+        }
+
+        .alert-custom {
+            border-radius: 12px;
+            font-size: 0.9rem;
+            border: none;
+        }
+
+        .register-link {
+            color: #0d6efd;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .register-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container d-flex justify-content-center">
+        <div class="card-login text-center">
+            
+            <i class="bi bi-person-circle login-icon"></i>
+            <h3 class="fw-bold mb-1">Bienvenido</h3>
+            <p class="text-muted mb-4">Ingresa tus credenciales</p>
+            
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show alert-custom text-start" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i> {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="POST" class="text-start">
+                {% csrf_token %}
+                
+                <div class="mb-3">
+                    <label class="form-label">Correo Electrónico</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0" style="border-radius: 12px 0 0 12px;">
+                            <i class="bi bi-envelope text-muted"></i>
+                        </span>
+                        <input type="email" name="email" class="form-control border-start-0" 
+                               style="border-radius: 0 12px 12px 0;" required placeholder="nombre@correo.com">
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label">Contraseña</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0" style="border-radius: 12px 0 0 12px;">
+                            <i class="bi bi-lock text-muted"></i>
+                        </span>
+                        <input type="password" name="password" class="form-control border-start-0" 
+                               style="border-radius: 0 12px 12px 0;" required placeholder="••••••••">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-login btn-primary w-100 mb-3">
+                    Entrar al Sistema
+                </button>
+            </form>
+
+            <div class="mt-2">
+                <small class="text-muted">
+                    ¿No tienes cuenta? <a href="{% url 'registro' %}" class="register-link">Regístrate aquí</a>
+                </small>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

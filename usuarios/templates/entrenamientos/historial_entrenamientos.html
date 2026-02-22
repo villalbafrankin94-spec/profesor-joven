@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Historial de Entrenamientos</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        /* Fondo gradiente oscuro consistente */
+        body {
+            background: radial-gradient(circle at center, #2c3e50 0%, #000000 100%);
+            min-height: 100vh;
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .custom-nav {
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Tarjeta blanca redondeada (Estilo Imagen Referencia) */
+        .card-custom {
+            background-color: white;
+            border-radius: 30px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+            border: none;
+            color: #333;
+        }
+
+        /* Tabla limpia */
+        .table thead th {
+            background-color: #f8f9fa;
+            color: #666;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            border: none;
+            padding: 20px;
+        }
+
+        .table td {
+            vertical-align: middle;
+            padding: 15px 20px;
+            border-color: #f0f0f0;
+        }
+
+        /* Botones de acción estilo la imagen de referencia */
+        .btn-edit {
+            background-color: #ffc107;
+            border: none;
+            border-radius: 8px;
+            color: black;
+            font-weight: 600;
+            font-size: 0.85rem;
+            padding: 5px 12px;
+        }
+
+        .btn-delete {
+            background-color: #dc3545;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            padding: 5px 10px;
+        }
+
+        .btn-add-training {
+            background-color: #28a745;
+            color: white;
+            border-radius: 12px;
+            font-weight: bold;
+            padding: 10px 20px;
+            border: none;
+            transition: 0.3s;
+        }
+
+        .btn-add-training:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+            color: white;
+        }
+
+        .player-info {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px 20px;
+            border-radius: 15px;
+            display: inline-block;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-dark custom-nav px-4 py-3">
+        <span class="navbar-brand fw-bold">⚽ Sistema Fútbol</span>
+        <div>
+            <a href="{% url 'listar_jugadores' %}" class="btn btn-outline-light btn-sm">
+                <i class="bi bi-arrow-left"></i> Volver a Jugadores
+            </a>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+
+        <div class="d-flex justify-content-between align-items-end mb-4">
+            <div>
+                <h2 class="fw-bold text-white mb-2">⚽ Lista de Entrenamientos</h2>
+                <div class="player-info">
+                    <span class="text-white-50">Jugador:</span> 
+                    <span class="fw-bold text-white">{{ jugador.nombre }}</span>
+                </div>
+            </div>
+
+            <a href="{% url 'crear_entrenamiento' jugador_id %}" class="btn-add-training shadow-sm text-decoration-none">
+                <i class="bi bi-plus-lg"></i> Agregar Entrenamiento
+            </a>
+        </div>
+
+        {% if entrenamientos %}
+        <div class="card-custom mb-5">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Tipo</th>
+                            <th>Duración</th>
+                            <th>Observaciones</th>
+                            <th class="text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+    {% for entrenamiento in entrenamientos %}
+    <tr>
+        <td class="text-muted">{{ entrenamiento.fecha|date:"M. d, Y, g:i a" }}</td>
+        <td><span class="badge bg-light text-dark fw-normal">{{ entrenamiento.tipo }}</span></td>
+        <td><strong>{{ entrenamiento.duracion }} min</strong></td>
+        <td class="text-muted small">{{ entrenamiento.observaciones|default:"Sin observaciones" }}</td>
+        <td class="text-center">
+            <div class="d-inline-flex gap-2">
+                <a href="{% url 'editar_entrenamiento' jugador_id entrenamiento.id %}" class="btn-edit text-decoration-none">
+                    <i class="bi bi-pencil-fill"></i> Editar
+                </a>
+
+                <form method="POST" action="{% url 'eliminar_entrenamiento' jugador_id entrenamiento.id %}"
+                    onsubmit="return confirm('¿Eliminar este registro?');" class="m-0">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-delete">
+                        <i class="bi bi-trash-fill"></i>
+                    </button>
+                </form>
+            </div>
+        </td>
+    </tr>
+    {% endfor %}
+</tbody>
+                </table>
+            </div>
+        </div>
+        {% else %}
+        <div class="alert bg-white text-dark text-center shadow-lg" style="border-radius: 20px; padding: 40px;">
+            <i class="bi bi-clipboard2-x d-block mb-3" style="font-size: 3rem; color: #dee2e6;"></i>
+            <h5 class="fw-bold">No hay registros</h5>
+            <p class="text-muted">Este jugador aún no tiene sesiones de entrenamiento documentadas.</p>
+            <a href="{% url 'crear_entrenamiento' jugador_id %}" class="btn btn-success btn-sm mt-2">
+                Registrar primer entrenamiento
+            </a>
+        </div>
+        {% endif %}
+
+    </div>
+
+</body>
+
+</html>
