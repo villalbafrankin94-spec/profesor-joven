@@ -79,35 +79,6 @@ Elimina completamente la sesión del usuario.
 
 ---
 
-# 🛡 Sistema de Seguridad
-
-## 🔒 Decorador login_required_firebase
-
-Protege las vistas verificando si existe `uid` en sesión.
-
-```python
-@login_required_firebase
-def dashboard(request):
-```
-
----
-
-## 🎭 Decorador rol_requerido()
-
-Permite restringir vistas por rol.
-
-```python
-@rol_requerido(['entrenador', 'admin'])
-```
-
-Roles disponibles:
-
-- admin
-- entrenador
-- aprendiz
-
----
-
 # 📊 Dashboard
 
 Muestra:
