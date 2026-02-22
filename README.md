@@ -55,12 +55,6 @@ Datos almacenados:
 
 ## 🔑 Inicio de Sesión
 
-- Se usa el endpoint oficial de Firebase:
-  
-```
-https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword
-```
-
 - Se validan credenciales
 - Se guarda en sesión:
   - uid
