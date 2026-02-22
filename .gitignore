@@ -1,0 +1,10 @@
+# Secretos y llaves (¡No subir!)
+serviceAccountKey.json.json
+.env
+
+# Base de datos y archivos temporales
+db.sqlite3
+__pycache__/
+*.pyc
+venv/
+.vscode/
