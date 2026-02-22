@@ -208,27 +208,12 @@ firebase_config.py
 
 ---
 
-# 🧠 Control de Roles
-
-| Acción | Aprendiz | Entrenador | Admin |
-|--------|----------|------------|-------|
-| Crear tareas | ✅ | ✅ | ✅ |
-| Crear jugador | ❌ | ✅ | ✅ |
-| Registrar entrenamiento | ❌ | ✅ | ✅ |
-| Eliminar jugador | ❌ | ✅ | ✅ |
-
----
-
 # 🏁 Flujo del Sistema
 
 1. Usuario se registra
 2. Se crea perfil en Firestore
 3. Inicia sesión
 4. Accede al dashboard
-5. Según su rol gestiona:
-   - Tareas
-   - Jugadores
-   - Entrenamientos
 
 ---
 
@@ -242,9 +227,3 @@ Demostrar integración completa entre:
 - Control de roles
 - CRUD completo
 - Subcolecciones
-
----
-
-# 👨‍💻 Proyecto Académico
-
-Sistema desarrollado como práctica académica para demostrar integración backend con servicios en la nube.
